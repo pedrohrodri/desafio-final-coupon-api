@@ -20,7 +20,7 @@ public class CouponController {
     @PostMapping
     public ResponseEntity<Coupon> create(@RequestBody @Valid CouponRequest req) {
         return Optional.of(req)
-                .filter(it -> repo.existsByCode(it.code()))
+                .filter(it -> !repo.existsByCode(it.code()))
                 .map(it -> repo.save(CouponMapper.toNewEntity(it)))
                 .map(it -> ResponseEntity.created(null).body(it))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
