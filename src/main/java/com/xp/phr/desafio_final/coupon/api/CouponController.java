@@ -42,7 +42,7 @@ public class CouponController {
     public ResponseEntity<CouponResponse> create(@RequestBody @Valid CouponRequest req) {
         return service.save(CouponMapper.toNewEntity(req))
                 .map(saved -> ResponseEntity
-                        .created(URI.create("/coupons/" + saved.getId()))  // ← URI real
+                        .created(URI.create("/coupons/" + saved.getId()))
                         .body(CouponMapper.toResponse(saved)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
