@@ -1,9 +1,11 @@
-package com.xp.phr.desafio_final.coupon;
+package com.xp.phr.desafio_final.coupon.domain.model;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -16,11 +18,14 @@ public class Coupon {
 
     @Id
     private final String id;
+    @Indexed(unique = true)
     private final String code;
     private final CouponType type;
     private final BigDecimal value;
     private final LocalDate expiryDate;
-    private final long usageCount;
+    @PositiveOrZero
+    private Integer maxUsage;
+    private long usageCount;
     @Version
     private final Long version;
 
@@ -29,6 +34,7 @@ public class Coupon {
             CouponType type,
             BigDecimal value,
             LocalDate expiryDate,
+            Integer maxUsage,
             long usageCount,
             Long version
     ) {
@@ -37,6 +43,7 @@ public class Coupon {
         this.type = type;
         this.value = value;
         this.expiryDate = expiryDate;
+        this.maxUsage = maxUsage;
         this.usageCount = usageCount;
         this.version = version;
     }
@@ -48,6 +55,7 @@ public class Coupon {
             CouponType type,
             BigDecimal value,
             LocalDate expiryDate,
+            Integer maxUsage,
             long usageCount,
             Long version
     ) {
@@ -56,7 +64,33 @@ public class Coupon {
         this.type = type;
         this.value = value;
         this.expiryDate = expiryDate;
+        this.maxUsage = maxUsage;
         this.usageCount = usageCount;
         this.version = version;
     }
+
+    public synchronized void incrementUsageCount() {
+        this.usageCount++;
+    }
+
+    public boolean isPercentType() {
+        return this.type.equals(CouponType.PERCENT);
+    }
+
+    public boolean isBirthDayType() {
+        return this.type.equals(CouponType.BIRTHDAY);
+    }
+
+    public boolean isExpired() {
+        return expiryDate.isBefore(LocalDate.now());
+    }
+
+    public boolean hasNoLimit() {
+        return maxUsage == null || maxUsage == 0;
+    }
+
+    public boolean usageLimitReached() {
+        return maxUsage != null && usageCount >= maxUsage;
+    }
+
 }
