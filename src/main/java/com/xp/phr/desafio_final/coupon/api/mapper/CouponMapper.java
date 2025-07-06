@@ -1,8 +1,8 @@
 package com.xp.phr.desafio_final.coupon.api.mapper;
 
-import com.xp.phr.desafio_final.coupon.domain.model.Coupon;
 import com.xp.phr.desafio_final.coupon.api.dto.CouponRequest;
 import com.xp.phr.desafio_final.coupon.api.dto.CouponResponse;
+import com.xp.phr.desafio_final.coupon.domain.model.Coupon;
 
 public final class CouponMapper {
     public static Coupon toNewEntity(CouponRequest req) {

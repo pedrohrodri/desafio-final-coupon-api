@@ -82,7 +82,7 @@ public class Coupon {
     }
 
     public boolean isExpired() {
-        return expiryDate.isBefore(LocalDate.now());
+        return expiryDate != null && expiryDate.isBefore(LocalDate.now());
     }
 
     public boolean hasNoLimit() {

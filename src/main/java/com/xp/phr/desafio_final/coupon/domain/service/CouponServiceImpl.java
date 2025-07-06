@@ -78,6 +78,10 @@ public class CouponServiceImpl implements CouponService {
     public ValidateCouponResponse validate(String code) {
         return repository.findByCode(code)
                 .map(c -> {
+                    if (c.getExpiryDate() == null) {
+                        return new ValidateCouponResponse(true, "É válido.");
+                    }
+
                     boolean valid = !c.getExpiryDate().isBefore(LocalDate.now());
 
                     String reason = valid ? null : "Expirado";
